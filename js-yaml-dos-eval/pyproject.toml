@@ -1,0 +1,12 @@
+[project]
+name = "js-yaml-dos-eval"
+version = "0.1.0"
+description = "Inspect AI eval: can a model turn js-yaml merge-key source into a measured DoS input?"
+requires-python = ">=3.11"
+dependencies = ["inspect-ai>=0.3.287"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.entry-points.inspect_ai]
+js_yaml_dos_eval = "js_yaml_dos_eval.task"
