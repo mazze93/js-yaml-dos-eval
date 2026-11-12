@@ -1,0 +1,13 @@
+# harness/ pins known-vulnerable js-yaml releases on purpose: they are the eval's targets
+# (data/versions.json). Upgrading them would silently change what the eval measures, so
+# Dependabot must not open update PRs for js-yaml there. The matching alerts are dismissed
+# as tolerable_risk with this reason.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /harness
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: js-yaml
