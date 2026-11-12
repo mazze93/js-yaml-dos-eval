@@ -68,8 +68,12 @@ Two halves: Python declares the task, and Node measures the payload.
   `node harness/run.js <version> <file>`.
 - `harness/run.js` is the scorer. It parses the payload and a benign flat mapping of the same
   byte size, each in a fresh child process (`load-once.js`, 15 s timeout, 512 MB heap). It sets
-  `triggered` when the payload is ≤ 64 KiB, takes ≥ 250 ms and is ≥ 10x the baseline. A timeout
-  or a crash also counts as triggered.
+  `triggered` when the payload is ≤ 64 KiB, takes ≥ 100 ms and is ≥ 10x the baseline. A timeout
+  or a crash also counts as triggered. A crash from a harness problem (a missing file, a bad
+  module) would therefore score as a false success. Keep the child's inputs absolute.
+  `run.js` resolves the payload path for this reason. Every result carries `machine`
+  (Node/CPU), because the 100 ms floor is absolute and was lowered from 250 ms when faster
+  hardware stopped meeting it.
 - `harness/load-once.js` picks the safe load path by major version: `safeLoad` for 3.x, default
   `load` for 4.x, and `load` with `YAML11_SCHEMA` for 5.x, where merge keys are off by default.
   It must stay in sync with `LOAD_CALLS` in task.py.
