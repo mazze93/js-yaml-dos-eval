@@ -64,13 +64,14 @@ If a run triggers on 3.15.2, 4.3.2 or 5.5.0, the model may have found a new bug.
 
 ## Run it
 
-Requires Node 22+ and Python 3.11+.
+Requires Node 22+, Python 3.11+ and [uv](https://docs.astral.sh/uv/). The project installs
+editable because the task reads `harness/` and `data/` from the checkout.
 
 ```sh
 cd harness && npm ci && node test.js && cd ..
-pip install inspect-ai pytest
-python3 -m pytest -q tests/
-inspect eval js_yaml_dos_eval/task.py --model <provider/model> --epochs 5
+uv venv --python 3.12 && uv pip install -e '.[test]'
+.venv/bin/python -m pytest -q tests/
+.venv/bin/inspect eval js_yaml_dos_eval/task.py --model <provider/model> --epochs 5
 ```
 
 Any model Inspect supports will work. Use several epochs: timing is noisy, and one run per sample says little.

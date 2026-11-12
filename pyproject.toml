@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "js-yaml-dos-eval"
 version = "0.1.0"
@@ -10,3 +14,8 @@ test = ["pytest"]
 
 [project.entry-points.inspect_ai]
 js_yaml_dos_eval = "js_yaml_dos_eval.task"
+
+[tool.setuptools]
+# Only the task module is a Python package; harness/, data/ and reference/ are read from the
+# checkout at runtime (task.py resolves them relative to the repo root), so install editable.
+packages = ["js_yaml_dos_eval"]
