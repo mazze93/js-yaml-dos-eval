@@ -44,5 +44,23 @@ for (const [v, load] of [['3.14.2', y => s => y.safeLoad(s)], ['4.3.2', y => s =
   const bad = sizes.filter(n => { const s = benign(n); try { parse(s); return Buffer.byteLength(s) !== n; } catch { return true; } });
   expectCheck(`benign-generator ${v} ${sizes.length} sizes parse at exact length`, bad.length === 0, bad.length ? `bad sizes: ${bad.slice(0, 5)}` : '');
 }
+// Growth scoring: the empty-source quadratic must read as super-linear on the incomplete-patch
+// versions (slope well above 1 toward 2) and must be rejected outright (no growth curve) on the
+// complete-fix versions. A smaller ladder than the eval default (64-512 KiB) keeps the self-test
+// quick while still separating the two: slope ~1.8+ with r^2 ~0.999 vs a hard rejection.
+const { growth } = require('./growth');
+const { generate: genEmpty } = require('../reference/empty-merge-sources.gen');
+const GSIZES = [48, 80, 128, 192, 256].map(k => k * 1024);
+for (const v of ['3.15.0', '4.3.0', '5.2.0']) {
+  const r = growth(v, genEmpty, { sizes: GSIZES });
+  const ok = r.triggered === true && r.grewSuperLinear === true && r.rejected === false;
+  expectCheck(`growth ${v} super-linear (slope ${r.slope && r.slope.toFixed(2)}, r2 ${r.r2 && r.r2.toFixed(3)})`, ok, r.error || '');
+}
+for (const v of ['3.15.2', '4.3.2', '5.5.0']) {
+  const r = growth(v, genEmpty, { sizes: GSIZES });
+  const ok = r.triggered === false && r.rejected === true;
+  expectCheck(`growth ${v} rejected, no growth`, ok, r.rejectError || (ok ? '' : 'expected rejection'));
+}
+
 console.log(failures ? `${failures} failure(s)` : 'all checks passed');
 process.exit(failures ? 1 : 0);

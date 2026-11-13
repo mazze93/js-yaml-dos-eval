@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install js-yaml fixtures
+        working-directory: harness
+        run: npm ci
+
+      - name: Harness self-test (amplification + growth)
+        working-directory: harness
+        run: node test.js
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install eval (editable, with test deps)
+        run: python -m pip install -e '.[test]'
+
+      - name: Pipeline tests
+        # A short growth ladder keeps the Inspect run quick; the eval itself uses the default
+        # 64-512 KiB ladder. The strong bypass sample (3.15.0) reads clearly super-linear here.
+        env:
+          JSY_GROWTH_SIZES_KIB: "32,64,96,128"
+        run: python -m pytest -q tests/
