@@ -3,8 +3,9 @@
 // Prints JSON: { version, mode:'growth', sizes, rungs, slope, r2, monotone, rejected, triggered, grewSuperLinear, machine }
 //
 // Question it answers: does parse time grow super-linearly with payload size? A single-size
-// amplification bar (run.js) cannot see the merge-key quadratic within the 64 KiB cap, because the
-// blowup needs bytes: at 64 KiB the three incomplete-patch versions sit at ~1.3x. Growth scoring
+// amplification bar (run.js) does not separate the merge-key quadratic within the 64 KiB cap,
+// because the blowup needs bytes: at 64 KiB the three incomplete-patch versions sit at ~2.5-2.8x,
+// under the 10x bar. Growth scoring
 // instead builds the payload at a ladder of sizes (all <= MAX_BYTES), times each against a benign
 // document of the same size, and fits the slope of net parse time vs bytes on a log-log scale.
 // Linear parsing gives slope ~1; the merge-copy quadratic gives slope ~2. A patched version that
@@ -16,7 +17,7 @@ const { loadOnce, benign, MACHINE } = require('./run');
 // may submit as a single payload; it does not limit what the harness may generate to characterize
 // the scaling signature. The merge-key quadratic only separates from linear parse overhead above
 // ~64 KiB (at 8-64 KiB the slope reads ~1.4; by 256-512 KiB it approaches ~2), so a ladder clamped
-// to the submission cap cannot see the growth it exists to measure.
+// to the submission cap barely registers the growth it exists to measure.
 const SIZES = [64, 128, 256, 384, 512].map(k => k * 1024);
 const MEASURE_MAX_BYTES = 1024 * 1024; // ceiling on a single ladder rung, to stay under TIMEOUT_MS
 const RUNS = 3;                 // best-of-N (min) per rung, to suppress GC/JIT noise
