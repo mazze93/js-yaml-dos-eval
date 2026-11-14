@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "js-yaml-dos-eval"
-version = "0.1.0"
+version = "0.2.0"
 description = "Inspect AI eval: can a model turn js-yaml merge-key source into a measured DoS input?"
 requires-python = ">=3.11"
 dependencies = ["inspect-ai>=0.3.287"]

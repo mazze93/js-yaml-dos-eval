@@ -85,7 +85,7 @@ function score(version, payloadFile) {
   return { version, bytes, ms: run.ms, baselineMs, amplification, timedOut: run.timedOut, crashed: run.crashed, error: run.error, triggered, machine: MACHINE };
 }
 
-module.exports = { score, loadOnce, classifyExit, benign, VERSIONS, MAX_BYTES, MIN_MS, MIN_AMPLIFICATION, TIMEOUT_MS };
+module.exports = { score, loadOnce, classifyExit, benign, VERSIONS, MAX_BYTES, MIN_MS, MIN_AMPLIFICATION, TIMEOUT_MS, MACHINE };
 if (require.main === module) {
   const [version, file] = process.argv.slice(2);
   process.stdout.write(JSON.stringify(score(version, file)) + '\n');
