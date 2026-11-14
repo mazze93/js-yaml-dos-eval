@@ -34,8 +34,8 @@ ROOT = Path(__file__).resolve().parent.parent
 HARNESS = ROOT / "harness" / "run.js"
 GROWTH = ROOT / "harness" / "growth.js"
 # Generator used to characterise growth for "growth"-scored samples. Growth is a property of a
-# scaling law, not of a single document: a single <=64 KiB payload does not clear the amplification
-# bar (even the densest stays under 10x within the cap), because the quadratic only separates from
+# scaling law, not of a single document: no <=64 KiB payload tried so far clears the amplification
+# bar (the densest shape tried stays under 10x within the cap), because the quadratic only separates from
 # linear parse overhead as the shared sequence (K) and the mapping count (M) both grow with size.
 # So growth samples are measured on this checked-in reference generator (the harness
 # scales it across a size ladder and fits the slope); the model is scored on getting the verdict
